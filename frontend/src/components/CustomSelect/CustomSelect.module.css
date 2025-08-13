@@ -1,0 +1,15 @@
+.container {
+    display: flex;
+    justify-content: center; 
+    align-items: center;     
+    margin: 20px 0;          
+}
+
+.ant-select {
+    border-radius: 8px;
+    transition: all 0.3s;
+}
+
+.ant-select:hover {
+    border-color: #1890ff;
+}
