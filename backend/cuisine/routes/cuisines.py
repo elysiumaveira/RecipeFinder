@@ -1,8 +1,8 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from bson import ObjectId
 from typing import List
 
-
+from auth.token import verify_token
 from database.connection import cuisines_collection, database
 from cuisine.schemas.cuisine import CuisineCreate, CuisineUpdate, CuisineResponse
 
@@ -18,7 +18,7 @@ def cuisine_serializer(cuisine) -> dict:
 
 
 @router.post('/cuisine-create', response_model=CuisineResponse)
-async def create_cuisine(cuisine: CuisineCreate):
+async def create_cuisine(cuisine: CuisineCreate, user: dict = Depends(verify_token)):
     existing = await cuisines_collection.find_one({'title': cuisine.title})
     if existing:
         raise HTTPException(status_code=400, detail='Вид кухни уже существует')
@@ -49,7 +49,7 @@ async def get_cuisine_by_id(id: str):
 
 
 @router.patch('/cuisine-edit/{id}', response_model=CuisineResponse)
-async def edit_cuisine(id: str, update_data: CuisineUpdate):
+async def edit_cuisine(id: str, update_data: CuisineUpdate, user: dict = Depends(verify_token)):
     if not ObjectId.is_valid(id):
         raise HTTPException(status_code=400, detail='Неверный ID')
     
@@ -65,7 +65,7 @@ async def edit_cuisine(id: str, update_data: CuisineUpdate):
 
 
 @router.delete('/cuisine-delete/{id}')
-async def delete_cuisine(id: str):
+async def delete_cuisine(id: str, user: dict = Depends(verify_token)):
     if not ObjectId.is_valid(id):
         raise HTTPException(status_code=400, detail='Неверный ID')
     

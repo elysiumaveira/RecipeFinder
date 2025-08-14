@@ -1,7 +1,8 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from bson import ObjectId
 from typing import List
 
+from auth.token import verify_token
 from database.connection import recipes_collection, database
 from recipes.schemas.recipe import RecipeCreate, RecipeUpdate, RecipeResponse
 
@@ -86,7 +87,7 @@ async def get_recipe_with_relations(recipe_id: str):
 
 
 @router.post('/recipe-create', response_model=RecipeResponse, status_code=201)
-async def create_recipe(recipe: RecipeCreate):
+async def create_recipe(recipe: RecipeCreate, user: dict = Depends(verify_token)):
     try:
         difficulty_id = ObjectId(recipe.difficulty)
         cuisine_id = ObjectId(recipe.cuisine)
@@ -202,7 +203,7 @@ async def get_recipe(id: str):
 
 
 @router.patch('/recipe-update/{id}', response_model=RecipeResponse)
-async def update_recipe(id: str, update_data: RecipeUpdate):
+async def update_recipe(id: str, update_data: RecipeUpdate, user: dict = Depends(verify_token)):
     if not ObjectId.is_valid(id):
         raise HTTPException(400, "Неверный ID рецепта")
     
@@ -257,7 +258,9 @@ async def update_recipe(id: str, update_data: RecipeUpdate):
 
 
 @router.delete('/recipe-delete/{id}')
-async def delete_recipe(id: str):
+async def delete_recipe(id: str, user: dict = Depends(verify_token)):
+    print(f"User data: {user}")
+    
     if not ObjectId.is_valid(id):
         raise HTTPException(400, "Неверный ID рецепта")
 

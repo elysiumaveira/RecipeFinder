@@ -10,6 +10,7 @@ import {
     List  } from 'antd';
 import type { Recipe } from '../types/recipe';
 import API from '../config/api';
+import getAccesToken from '../utils/getAccessToken';
 
 const { Title, Paragraph } = Typography;
 
@@ -40,8 +41,8 @@ export default function RecipeDetail() {
 
     const handleDelete = async () => {
         try {
-            await API.delete(`/recipe-delete/${recipe?._id}`)
-            navigate('/')
+            await API.delete(`/recipe-delete/${recipe?._id}`, {withCredentials: true});
+            navigate('/');
         } catch (error) {
             console.log(error)
         }

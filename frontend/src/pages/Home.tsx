@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import type { Difficulty, Cuisine, Recipe } from '../types/recipe';
 import API from '../config/api';
 import { List, Typography, Spin, Alert, Button, Select, Input } from 'antd';
 import RecipeCard from '../components/RecipeCard';
+import { useKeycloak } from '@react-keycloak/web';
+import AuthComponent from '../components/Auth';
 
 const { Title } = Typography;
 
 export default function Home() {
+    const { keycloak, initialized } = useKeycloak();
     const [recipes, setRecipes] = useState<Recipe[]>([]);
     const [difficulties, setDifficulties] = useState<Difficulty[]>([])
     const [difficulty, setDifficulty] = useState<string | null>(null)
@@ -19,6 +22,8 @@ export default function Home() {
     const [error, setError] = useState<string | null>(null)
     const [includeIngredients, setIncludeIngredients] = useState<string[] | null>([])
     const [excludeIngredients, setExcludeIngredients] = useState<string[] | null>([])
+
+    const navigate = useNavigate()
 
     useEffect(() => {
         const fetchAllData = async () => {
@@ -167,11 +172,53 @@ export default function Home() {
         )
     }
 
+    const handleLogin = async () => {
+        try {
+            // keycloak.login({
+            //     redirectUri: window.location.origin
+            // })
+            window.location.href = 'http://localhost:8000/auth/login'
+        } catch (error) {
+            setError('Ошибка')
+            console.log(error)
+        }
+        // window.location.href = 'http://localhost:8000/auth/login'
+        // window.location.href = `${API.get('/auth/login')}`
+    }
+
+    const hanldeLogout = async () => {
+        try {
+            keycloak.logout({
+                redirectUri: window.location.origin
+            })
+        } catch (error) {
+            setError('Ошибка')
+            console.log(error)
+        }
+    }
+
+    // const isAuthenticated = keycloak?.authenticated;
+    console.log('Keycloak initialized:', initialized);
+    console.log('Keycloak authenticated:', keycloak?.authenticated);
+    console.log('Keycloak token:', keycloak?.token ? 'Present' : 'Missing');
+
     return (
         <>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Title level={2}>Все рецепты</Title>
                 <div>
+                    {/* {keycloak?.authenticated ? (
+                        <Button onClick={hanldeLogout}>
+                            Выйти
+                        </Button>
+                    ) : (
+                        <Button onClick={handleLogin}>
+                            Войти
+                        </Button>
+                    )} */}
+
+                    <AuthComponent />
+
                     <Select
                         placeholder='Фильтр по кухне'
                         onChange={handleChangeCuisine}

@@ -1,8 +1,9 @@
 from typing import List
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from bson import ObjectId
 from difficulty.schemas.difficutly import DifficultyCreate, DifficultyUpdate, DifficultyResponse
 from database.connection import difficulty_collection, database
+from auth.token import verify_token
 
 
 router = APIRouter(tags=['Сложность'])
@@ -16,7 +17,7 @@ def difficulty_serializer(difficulty) -> dict:
 
 
 @router.post('/difficulty-create', response_model=DifficultyResponse)
-async def create_difficulty(difficulty: DifficultyCreate):
+async def create_difficulty(difficulty: DifficultyCreate, user: dict = Depends(verify_token)):
     existing = await difficulty_collection.find_one({'title': difficulty.title})
     if existing:
         raise HTTPException(status_code=400, detail='Уровень сложности уже существует')
@@ -47,7 +48,7 @@ async def get_difficulty_by_id(id: str):
 
 
 @router.patch('/difficulty-edit/{id}', response_model=DifficultyResponse)
-async def edit_difficulty(id: str, update_data: DifficultyUpdate):
+async def edit_difficulty(id: str, update_data: DifficultyUpdate, user: dict = Depends(verify_token)):
     if not ObjectId.is_valid(id):
         raise HTTPException(status_code=400, detail='Неверный ID')
     
@@ -64,7 +65,7 @@ async def edit_difficulty(id: str, update_data: DifficultyUpdate):
 
 
 @router.delete('/difficulty-delete/{id}')
-async def delete_difficulty(id: str):
+async def delete_difficulty(id: str, user: dict = Depends(verify_token)):
     if not ObjectId.is_valid(id):
         raise HTTPException(status_code=400, detail='Неверный ID')
     
