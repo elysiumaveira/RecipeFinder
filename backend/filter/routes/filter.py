@@ -2,8 +2,8 @@ from fastapi import Query, APIRouter, HTTPException
 from typing import Optional, List
 from bson import ObjectId
 
-from recipes.schemas.recipe import RecipeResponse
-from database.connection import recipes_collection
+from backend.recipes.schemas.recipe import RecipeResponse
+from backend.database.connection import recipes_collection
 
 
 router = APIRouter(tags=['Фильтрация'])

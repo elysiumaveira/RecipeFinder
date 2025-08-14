@@ -1,8 +1,8 @@
 from typing import List
 from fastapi import APIRouter, HTTPException
 from bson import ObjectId
-from difficulty.schemas.difficutly import DifficultyCreate, DifficultyUpdate, DifficultyResponse
-from database.connection import difficulty_collection, database
+from backend.difficulty.schemas.difficutly import DifficultyCreate, DifficultyUpdate, DifficultyResponse
+from backend.database.connection import difficulty_collection, database
 
 
 router = APIRouter(tags=['Сложность'])
@@ -20,7 +20,7 @@ async def create_difficulty(difficulty: DifficultyCreate):
     existing = await difficulty_collection.find_one({'title': difficulty.title})
     if existing:
         raise HTTPException(status_code=400, detail='Уровень сложности уже существует')
-    
+
     result = await difficulty_collection.insert_one(difficulty.model_dump())
     created = await difficulty_collection.find_one({'_id': result.inserted_id})
 

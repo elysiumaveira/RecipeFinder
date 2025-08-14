@@ -1,8 +1,8 @@
 from pydantic import BaseModel, ConfigDict, Field
 from typing import List
 from bson import ObjectId
-from difficulty.schemas.difficutly import DifficultyResponse
-from cuisine.schemas.cuisine import CuisineResponse
+from backend.difficulty.schemas.difficutly import DifficultyResponse
+from backend.cuisine.schemas.cuisine import CuisineResponse
 
 
 class RecipeCreate(BaseModel):

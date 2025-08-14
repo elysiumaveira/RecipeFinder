@@ -2,8 +2,8 @@ from fastapi import APIRouter, HTTPException
 from bson import ObjectId
 from typing import List
 
-from database.connection import recipes_collection, database
-from recipes.schemas.recipe import RecipeCreate, RecipeUpdate, RecipeResponse
+from backend.database.connection import recipes_collection, database
+from backend.recipes.schemas.recipe import RecipeCreate, RecipeUpdate, RecipeResponse
 
 
 router = APIRouter(tags=['Рецепты'])

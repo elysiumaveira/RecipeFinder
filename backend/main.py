@@ -3,10 +3,10 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from recipes.routes.recipes import router as recipe_router
-from difficulty.routes.difficulties import router as difficulty_router
-from cuisine.routes.cuisines import router as cuisine_router
-from filter.routes.filter import router as filter_router
+from backend.recipes.routes.recipes import router as recipe_router
+from backend.difficulty.routes.difficulties import router as difficulty_router
+from backend.cuisine.routes.cuisines import router as cuisine_router
+from backend.filter.routes.filter import router as filter_router
 
 
 app = FastAPI(title='RecipeFinder API')

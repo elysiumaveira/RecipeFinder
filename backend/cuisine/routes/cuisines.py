@@ -3,8 +3,8 @@ from bson import ObjectId
 from typing import List
 
 
-from database.connection import cuisines_collection, database
-from cuisine.schemas.cuisine import CuisineCreate, CuisineUpdate, CuisineResponse
+from backend.database.connection import cuisines_collection, database
+from backend.cuisine.schemas.cuisine import CuisineCreate, CuisineUpdate, CuisineResponse
 
 
 router = APIRouter(tags=['Кухня'])
